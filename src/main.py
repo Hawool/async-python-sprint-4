@@ -8,7 +8,7 @@ from fastapi.responses import ORJSONResponse
 from starlette.requests import Request
 from starlette.responses import Response
 
-from core.logger import LOGGING
+from src.core.logger import LOGGING
 from src.api.v1.urls import urls_router
 from src.core.config import app_settings
 

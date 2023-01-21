@@ -29,6 +29,7 @@ async def save_url(
         create_url: url_schemas.UrlCreate,
         db: AsyncSession = Depends(get_session)
 ) -> dict[str, str]:
+    print(f'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {create_url}')
     url = await url_crud.create(db=db, obj_in=create_url)
     return url
 

@@ -8,6 +8,7 @@ alembic
 pytest
 pytest-asyncio
 httpx
+trio
 
 SQLAlchemy
 SQLAlchemy-Utils
