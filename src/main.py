@@ -8,10 +8,10 @@ from fastapi.responses import ORJSONResponse
 from starlette.requests import Request
 from starlette.responses import Response
 
-from src.core.logger import LOGGING
 from src.api.v1.urls import urls_router
 from src.core.config import app_settings
-
+from src.core.constants import BLACK_LIST
+from src.core.logger import LOGGING
 
 dictConfig(LOGGING)
 logger = logging.getLogger('root')
@@ -24,10 +24,9 @@ app = FastAPI(
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    if request.client.host == '127.0.0.2':
+    if request.client.host in BLACK_LIST:  # type: ignore
         return Response(status_code=HTTPStatus.IM_A_TEAPOT)
-    response = await call_next(request)
-    return response
+    return await call_next(request)
 
 app.include_router(urls_router)
 

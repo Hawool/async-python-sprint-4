@@ -1,9 +1,5 @@
 import pytest
-from _pytest import monkeypatch
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from src.models.urls import UrlModel
 
 
 @pytest.mark.anyio()

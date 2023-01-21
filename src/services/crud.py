@@ -52,8 +52,3 @@ class RepositoryDB(Repository, Generic[ModelType, CreateSchemaType, UpdateSchema
         await db.commit()
         await db.refresh(db_obj)
         return db_obj
-
-    async def delete(self, db: AsyncSession, *, id: int) -> ModelType:
-        # todo
-        return db_obj
-

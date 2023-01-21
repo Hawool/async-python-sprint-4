@@ -1,5 +1,8 @@
-from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from typing import AsyncGenerator
+
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 from src.core.config import app_settings
 
@@ -17,6 +20,6 @@ async_session = sessionmaker(
 
 # Функция понадобится при внедрении зависимостей
 # Dependency
-async def get_session() -> AsyncSession:
+async def get_session() -> AsyncGenerator:
     async with async_session() as session:
         yield session

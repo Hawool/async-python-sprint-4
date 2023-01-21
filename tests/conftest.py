@@ -6,7 +6,8 @@ import pytest
 import pytest_asyncio
 from _pytest.monkeypatch import MonkeyPatch
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine, AsyncConnection, AsyncTransaction
+from sqlalchemy.ext.asyncio import (AsyncConnection, AsyncEngine, AsyncSession,
+                                    AsyncTransaction, create_async_engine)
 from sqlalchemy.orm import sessionmaker
 
 from src.core.config import app_settings
@@ -20,6 +21,8 @@ engine = create_async_engine(f'{app_settings.DATABASE_DSN}', echo=True, future=T
 async_session = sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
 )
+
+
 async def get_test_session() -> AsyncSession:
     async with async_session() as session:
         yield session
@@ -77,48 +80,3 @@ async def session_f(db_connection: AsyncConnection, monkeypatch: MonkeyPatch) ->
 async def client() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url='http://test') as client:
         yield client
-
-
-
-#######################################################################################################
-# engine = create_async_engine(f'{app_settings.DATABASE_DSN}_test', echo=True, future=True)
-# async_session = sessionmaker(
-#     engine, class_=AsyncSession, expire_on_commit=False
-# )
-#
-#
-# async def get_test_session() -> AsyncSession:
-#     async with async_session() as session:
-#         yield session
-#
-#
-# app.dependency_overrides[get_session] = get_test_session
-#
-#
-# @pytest_asyncio.fixture()
-# async def client() -> AsyncGenerator[AsyncClient, None]:
-#     async with AsyncClient(app=app, base_url='http://test') as client:
-#         yield client
-#
-#
-# @pytest_asyncio.fixture()
-# async def base():
-#     """
-#     creates DB test_collector,
-#     creates tables,
-#     allows to make queries,
-#     when test is done, drops DB
-#     """
-#     if not database_exists(engine.url):
-#         create_async_engine(engine.url)
-#
-#     with engine.connect() as conn:
-#         # add uuid_generate_v4() extension
-#         conn.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
-#
-#     Base.metadata.create_all(bind=engine)
-#     with async_session as db:
-#         yield db
-#
-#     if database_exists(engine.url):
-#         drop_database(engine.url)

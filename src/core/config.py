@@ -16,7 +16,7 @@ class AppSettings(BaseSettings):
     APP_TITLE: str = "LibraryApp"
     HOST: str = '0.0.0.0'
     PORT: int = 9000
-    DATABASE_DSN: PostgresDsn
+    DATABASE_DSN: PostgresDsn = 'postgresql+asyncpg://postgres:postgres@localhost:5555/postgres'
 
     class Config:
         env_file = '../.env', '.env'

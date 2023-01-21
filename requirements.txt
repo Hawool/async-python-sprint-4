@@ -1,18 +1,18 @@
-fastapi
-orjson
-pydantic
-uvicorn
-uvloop
-python-dotenv
-alembic
-pytest
-pytest-asyncio
-httpx
-trio
+fastapi==0.89.1
+orjson==3.8.5
+pydantic==1.10.4
+uvicorn==0.20.0
+uvloop==0.17.0
+python-dotenv==0.21.0
+alembic==1.9.2
+pytest==7.2.1
+pytest-asyncio==0.20.3
+httpx==0.23.3
+trio==0.22.0
 
-SQLAlchemy
-SQLAlchemy-Utils
-asyncpg
-psycopg2-binary
-databases[postgresql]
+SQLAlchemy==1.4.46
+SQLAlchemy-Utils==0.39.0
+asyncpg==0.27.0
+psycopg2-binary==2.9.5
+databases[postgresql]==0.7.0
 

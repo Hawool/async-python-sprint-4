@@ -29,9 +29,7 @@ async def save_url(
         create_url: url_schemas.UrlCreate,
         db: AsyncSession = Depends(get_session)
 ) -> dict[str, str]:
-    print(f'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {create_url}')
-    url = await url_crud.create(db=db, obj_in=create_url)
-    return url
+    return await url_crud.create(db=db, obj_in=create_url)
 
 
 @urls_router.get('/{url_id}', status_code=307)
@@ -53,16 +51,14 @@ async def redirect_url(
     update_url_schema = url_schemas.UrlUpdate(number_of_transitions=url.number_of_transitions + 1)
     url = await url_crud.update(db=db, db_obj=url, obj_in=update_url_schema)
 
-    response = RedirectResponse(
-        url=url.url,
+    return RedirectResponse(
+        url=str(url.url),
         status_code=status.HTTP_307_TEMPORARY_REDIRECT
     )
 
-    return response
-
 
 @urls_router.get('/{url_id}/status', status_code=200, response_model=url_schemas.UrlInDB)
-async def redirect_url(
+async def status_url(
         *,
         url_id: int,
         db: AsyncSession = Depends(get_session)
