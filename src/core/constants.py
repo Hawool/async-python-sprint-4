@@ -1,6 +1,6 @@
 BLACK_LIST: list[str] = []
 
 
-class APIUrlAnswers:
-    NOT_FOUND = 'Url not found'
+class APIAnswers:
+    NOT_FOUND = 'Not found'
     GONE = 'Gone'

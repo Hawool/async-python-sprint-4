@@ -9,6 +9,12 @@ pytest==7.2.1
 pytest-asyncio==0.20.3
 httpx==0.23.3
 trio==0.22.0
+anyio==3.6.2
+pytest-asyncio==0.20.3
+pytest-tornasync==0.6.0.post2
+pytest-trio==0.8.0
+pytest-twisted==1.14.0
+Twisted==22.10.0
 
 SQLAlchemy==1.4.46
 SQLAlchemy-Utils==0.39.0

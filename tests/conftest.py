@@ -13,20 +13,10 @@ from sqlalchemy.orm import sessionmaker
 from src.core.config import app_settings
 from src.db.db import Base, get_session
 from src.main import app
-from tests.db_utils import create_db
+from src.models.urls import UrlModel
+from tests.db_utils import create_db, DBUtils
 
 app_settings.DATABASE_DSN = f'{app_settings.DATABASE_DSN}_test'
-
-engine = create_async_engine(f'{app_settings.DATABASE_DSN}', echo=True, future=True)
-async_session = sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False
-)
-
-
-async def get_test_session() -> AsyncSession:
-    async with async_session() as session:
-        yield session
-app.dependency_overrides[get_session] = get_test_session
 
 
 @pytest.fixture(scope='session')
@@ -41,16 +31,19 @@ async def _create_db() -> None:
     await create_db(url=app_settings.DATABASE_DSN, base=Base)
 
 
-@pytest_asyncio.fixture()
+@pytest_asyncio.fixture(scope='session')
 async def engine() -> AsyncGenerator[AsyncEngine, None]:
     engine = create_async_engine(app_settings.DATABASE_DSN, echo=True, future=True)
     try:
         yield engine
     finally:
+        # await engine.dispose()
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
         await engine.dispose()
 
 
-@pytest_asyncio.fixture()
+@pytest_asyncio.fixture(scope='session')
 async def db_connection(engine: AsyncEngine) -> AsyncGenerator[AsyncConnection, None]:
     async with engine.connect() as connection:
         yield connection
@@ -80,3 +73,13 @@ async def session_f(db_connection: AsyncConnection, monkeypatch: MonkeyPatch) ->
 async def client() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url='http://test') as client:
         yield client
+
+
+@pytest_asyncio.fixture()
+async def test_url(session_f: AsyncSession):
+    url = UrlModel(
+        url='http://google.com',
+        name='google'
+    )
+    session_f.add(url)
+    await session_f.commit()

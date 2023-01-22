@@ -2,7 +2,7 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.db import Base
@@ -44,11 +44,14 @@ class RepositoryDB(Repository, Generic[ModelType, CreateSchemaType, UpdateSchema
         db_obj: ModelType,
         obj_in: Union[UpdateSchemaType, Dict[str, Any]]
     ) -> ModelType:
+
         obj_in_data = jsonable_encoder(obj_in)
-        for key, value in obj_in_data.items():
-            if value:
-                setattr(db_obj, key, value)
-        db.add(db_obj)
+        obj_in_data_without_none = {k: v for k, v in obj_in_data.items() if v is not None}
+
+        await db.execute(
+            update(self._model).
+            where(self._model.id == db_obj.id).
+            values(obj_in_data_without_none)
+        )
         await db.commit()
-        await db.refresh(db_obj)
         return db_obj

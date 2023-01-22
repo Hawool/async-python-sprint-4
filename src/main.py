@@ -8,6 +8,7 @@ from fastapi.responses import ORJSONResponse
 from starlette.requests import Request
 from starlette.responses import Response
 
+from src.api.v1.check_db import check_db_router
 from src.api.v1.urls import urls_router
 from src.core.config import app_settings
 from src.core.constants import BLACK_LIST
@@ -29,6 +30,7 @@ async def add_process_time_header(request: Request, call_next):
     return await call_next(request)
 
 app.include_router(urls_router)
+app.include_router(check_db_router)
 
 if __name__ == '__main__':
     logger.info('Server started')
